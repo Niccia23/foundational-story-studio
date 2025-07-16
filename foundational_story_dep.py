@@ -204,6 +204,26 @@ with st.sidebar:
         key="story_prompt"
     )
 
+    default_adaptation_prompt = (
+    "You are a literary adaptability assessment assistant. Given a passage from a story, you will produce an adaptation report assessing if the story is suitable for adaptation into a movie or TV series.\n\n"
+    "Your assessment should address each of the following sections in detail:\n\n"
+    "1. **Concept Evaluation:** How easily and effectively can this text be translated into a visual medium? Consider the inherent visual elements, character arcs, and narrative structure.\n"
+    "2. **Visual Storytelling Potential:** Identify key scenes or sequences that would translate well to screen. Are there strong visual metaphors, action sequences, or emotional beats?\n"
+    "3. **Source Material Fidelity:** Discuss how closely the adaptation should adhere to the original text. Evaluate for elements that must be preserved to retain the central themes, plot points, and character arcs.\n"
+    "4. **Internal versus External Conflict:** Identify how much of the story occurs through observable action, dialogue, and environmental interaction versus internal monologue or exposition. How can internal conflicts be effectively externalized for visual storytelling?\n"
+    "5. **Dialogue Potential:** Provide an example scene with source dialogue that encapculates the story's essence. How can this dialogue be adapted for screen? Consider pacing, subtext, and character voice.\n"
+    "6. **Structural Suitability:** Based purely on the narrative structure, does the story lend itself to a feature film or episodic series? Quantify the amount of dialgoue required to convey the story effectively.\n"
+    "7. **Addressing Unfilmable Aspects:** Does the work rely heavily on abstract concepts, complex narrative devices (e.g., unreliable narrators, non-linear timelines), unique literary styles, or sensory experiences that may not translate well to screen?\n\n"
+    "Passage:\n{literary_text}"
+    )
+
+    custom_adaptation_prompt = st.text_area(
+        "Adaptation Prompt Template",
+        value=default_adaptation_prompt,
+        height=300,
+        key="adaptation_prompt"
+    )
+
 # 🔹 Initialize literary text variable
 literary_text = ""
 
@@ -241,6 +261,7 @@ if uploaded_file is not None:
 if st.button("📝 Run Evaluation") and literary_text:
     with st.spinner("Evaluating story concept..."):
         prompt_to_use_story = custom_story_prompt.format(literary_text=literary_text)
+        prompt_to_use_adaptation = custom_adaptation_prompt.format(literary_text=literary_text)
         try:
             model = genai.GenerativeModel("gemini-2.5-flash")
             response = model.generate_content(prompt_to_use_story)
@@ -256,7 +277,22 @@ if st.button("📝 Run Evaluation") and literary_text:
             data=response.text.strip(),
             file_name="story_evaluation.txt",
             mime="text/plain"
-    )
+            )
+
+            adaptation_response = model.generate_content(prompt_to_use_adaptation)
+            st.success("✅ Adaptation analysis complete!")
+            st.markdown("### 🎥 Adaptation Suitability Evaluation")
+            with st.expander("Click to view full adaptation report", expanded=True):
+                st.markdown(
+                    f"<div class='highlight'>{adaptation_response.text.strip()}</div>",
+                    unsafe_allow_html=True
+                )
+            st.download_button(
+                label="📥 Download Adaptation Report",
+                data=adaptation_response.text.strip(),
+                file_name="adaptation_evaluation.txt",
+                mime="text/plain"
+            )
         except Exception as e:
             st.error(f"❌ Error generating story analysis: {str(e)}")
 
