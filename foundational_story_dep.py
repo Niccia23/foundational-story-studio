@@ -224,6 +224,26 @@ with st.sidebar:
         key="adaptation_prompt"
     )
 
+
+    default_thematic_core_prompt = (
+    "You are a thematic core analysis assistant. Given a passage from a story, you will produce a report assessing the thematic core of the story.\n\n"
+    "Your assessment should address each of the following sections in detail:\n\n"
+    "1. **Identifiable Themes:** Identify the primary themes present in the story. What are the key messages or ideas that the author is trying to convey? Why do these themes matter?\n" \
+    "2. **Relevance:** Analyze if the themes speak to a timeless human experience. Do they resonate with universal emotions or situations such as love, loss, etc.?\n" \
+    "3. **Emotional Resonance:** Discuss the emotional impact of the story. How do the themes evoke feelings in the reader?\n" \
+    "4. **Cultural and Social Context:** Consider the broader context in which the story was written. How do societal issues influence its themes?\n" \
+    "5. **Subtext and Symbolism:** Identify any elements conveyed through subtext or symbolism that enhance the thematic depth of the story. How does this add to the sophistication of the story?\n" \
+    "Passage:\n{literary_text}"
+    )
+
+    custom_thematic_prompt = st.text_area(
+        "Thematic Core Prompt Template",
+        value=default_thematic_core_prompt,
+        height=300,
+        key="thematic_prompt"
+    )
+
+
 # 🔹 Initialize literary text variable
 literary_text = ""
 
@@ -262,10 +282,14 @@ if st.button("📝 Run Evaluation") and literary_text:
     with st.spinner("Evaluating story concept..."):
         prompt_to_use_story = custom_story_prompt.format(literary_text=literary_text)
         prompt_to_use_adaptation = custom_adaptation_prompt.format(literary_text=literary_text)
+        prompt_to_use_thematic = custom_thematic_prompt.format(literary_text=literary_text)
+
+        model = genai.GenerativeModel("gemini-2.5-flash")
+        
+        # Generate story elements analysis
         try:
-            model = genai.GenerativeModel("gemini-2.5-flash")
             response = model.generate_content(prompt_to_use_story)
-            st.success("✅ Analysis complete!")
+            st.success("✅ Story elements analysis complete!")
             st.markdown("### 🎯 Foundational Story Elements Evaluation")
             with st.expander("Click to view full report", expanded=True):
                 st.markdown(
@@ -278,7 +302,11 @@ if st.button("📝 Run Evaluation") and literary_text:
             file_name="story_evaluation.txt",
             mime="text/plain"
             )
+        except Exception as e:
+            st.error(f"❌ Error generating story elements analysis: {str(e)}")
 
+        # Generate adaptation analysis
+        try:
             adaptation_response = model.generate_content(prompt_to_use_adaptation)
             st.success("✅ Adaptation analysis complete!")
             st.markdown("### 🎥 Adaptation Suitability Evaluation")
@@ -294,7 +322,27 @@ if st.button("📝 Run Evaluation") and literary_text:
                 mime="text/plain"
             )
         except Exception as e:
-            st.error(f"❌ Error generating story analysis: {str(e)}")
+            st.error(f"❌ Error generating adaptation analysis: {str(e)}")
+
+        # Generate thematic core analysis
+        st.info("🔄 Generating thematic core analysis...")
+        try:
+            thematic_core_response = model.generate_content(prompt_to_use_thematic)
+            st.success("✅ Thematic core analysis complete!")
+            st.markdown("### 🌟 Thematic Core Evaluation")
+            with st.expander("Click to view full thematic core report", expanded=True):
+                st.markdown(
+                    f"<div class='highlight'>{thematic_core_response.text.strip()}</div>",
+                    unsafe_allow_html=True
+                )
+            st.download_button(
+                label="📥 Download Thematic Core Report",
+                data=thematic_core_response.text.strip(),
+                file_name="thematic_core_evaluation.txt",
+                mime="text/plain"
+            )
+        except Exception as thematic_error:
+            st.error(f"❌ Error generating thematic core analysis: {str(thematic_error)}")
 
 
 # 🔹 Footer
