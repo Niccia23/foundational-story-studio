@@ -62,7 +62,25 @@ st.markdown("""
         background-color: rgba(255,255,255,0.1);
         border: 1px solid rgba(255,255,255,0.3);
         border-radius: 8px;
-        color: #ffffff;
+        color: #ffffff !important;
+        backdrop-filter: blur(10px);
+    }
+
+    /* Text input styling */
+    .stTextInput input {
+        background-color: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.3);
+        border-radius: 8px;
+        color: #ffffff !important;
+        backdrop-filter: blur(10px);
+    }
+
+    /* Text area for file preview */
+    .stTextArea textarea[readonly] {
+        background-color: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 8px;
+        color: #ffffff !important;
         backdrop-filter: blur(10px);
     }
 
@@ -162,7 +180,7 @@ st.markdown('<div class="main-content-wrapper">', unsafe_allow_html=True)
 # 🔹 Title and subtitle
 st.markdown("<h1>🎬 Foundational Story Elements Studio</h1>", unsafe_allow_html=True)
 st.markdown(
-    "<p style='font-size:1.1rem; margin-top:0; color:#333;'>Evaluate the core strength of your story concept—powered by LingIQ AI Linguistic Agents.</p>",
+    "<p style='font-size:1.1rem; margin-top:0; color:#ffffff;'>Evaluate the core strength of your story concept—powered by LingIQ AI Linguistic Agents.</p>",
     unsafe_allow_html=True
 )
 
@@ -177,7 +195,7 @@ with st.sidebar:
     )
 
     st.markdown(
-        "<div style='font-size:0.9rem; color:#555;'>ℹ️ Tip: Short excerpts (1–3 pages) work best for evaluation.</div>",
+        "<div style='font-size:0.9rem; color:#cccccc;'>ℹ️ Tip: Short excerpts (1–3 pages) work best for evaluation.</div>",
         unsafe_allow_html=True
     )
 
