@@ -18,95 +18,86 @@ def get_base64(file_path):
         data = f.read()
     return base64.b64encode(data).decode()
 
-# Encode your background image
-encoded_bg = get_base64("iceberg2.jpg")
-
-# Insert background CSS
+# Dark gradient background CSS
 st.markdown(
-    f"""
+    """
     <style>
-    .stApp {{
-        background-image: url("data:image/jpg;base64,{encoded_bg}");
-        background-size: cover;
-        background-position: center;
+    .stApp {
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #533483 75%, #7209b7 100%);
         background-attachment: fixed;
-    }}
-    .stApp::before {{
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(255,255,255,0.92);
-        backdrop-filter: blur(3px);
-        z-index: -1;
-    }}
-    .main-content-wrapper {{
+        min-height: 100vh;
+    }
+    .main-content-wrapper {
         padding: 20px 50px;
-    }}
+    }
     </style>
     """,
     unsafe_allow_html=True
 )
 
-# 🔹 Google Fonts & custom styling
+# 🔹 Google Fonts & custom styling for dark theme
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans&display=swap');
 
     html, body, [class*="css"] {
         font-family: 'Open Sans', sans-serif;
-        color: #000 !important;
+        color: #ffffff !important;
     }
 
     h1 {
         font-family: 'Playfair Display', serif;
         font-size: 2.4rem;
-        color: #4a2e1f !important;
+        color: #ffffff !important;
         margin-bottom: 0.3rem;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     }
 
     h2, h3 {
         font-family: 'Playfair Display', serif;
-        color: #4a2e1f !important;
+        color: #ffffff !important;
     }
 
     .stTextArea textarea {
-        background-color: #fffdf7;
-        border: 1px solid #d9cbb8;
+        background-color: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.3);
         border-radius: 8px;
-        color: #000;
+        color: #ffffff;
+        backdrop-filter: blur(10px);
     }
 
     .stButton>button {
-        background-color: #795548;
+        background: linear-gradient(45deg, #7209b7, #533483);
         color: #fff;
         font-size: 1.05rem;
         border-radius: 6px;
         padding: 0.6rem 1rem;
         border: none;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     }
 
     .stButton>button:hover {
-        background-color: #5d4037;
+        background: linear-gradient(45deg, #533483, #7209b7);
         color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.4);
     }
 
     .highlight {
-        background-color: #fffdf7;
-        border-left: 5px solid #795548;
+        background-color: rgba(255,255,255,0.1);
+        border-left: 5px solid #7209b7;
         padding: 1rem;
         border-radius: 6px;
         margin-top: 1rem;
         font-size: 1.05rem;
         line-height: 1.6;
-        color: #000;
+        color: #ffffff;
+        backdrop-filter: blur(10px);
     }
 
     .token-info {
         font-size: 0.9rem;
-        color: #555;
+        color: #cccccc;
         margin-top: 0.5rem;
     }
 
@@ -114,20 +105,42 @@ st.markdown("""
         text-align: center;
         font-size: 0.9rem;
         margin-top: 3rem;
-        color: #555;
+        color: #cccccc;
     }
 
-    /* Make file uploader label black */
+    /* Make file uploader label white */
     section[data-testid="stFileUploader"] label {
-        color: #000 !important;
+        color: #ffffff !important;
     }
 
     /* Style file uploader container */
     section[data-testid="stFileUploader"] {
-        background-color: #fffdf7;
-        border: 1px solid #d9cbb8;
+        background-color: rgba(255,255,255,0.1);
+        border: 1px solid rgba(255,255,255,0.3);
         border-radius: 8px;
         padding: 1rem;
+        backdrop-filter: blur(10px);
+    }
+
+    /* Sidebar styling for dark theme */
+    .css-1d391kg {
+        background-color: rgba(0,0,0,0.3);
+        backdrop-filter: blur(10px);
+    }
+
+    /* Expander styling */
+    .streamlit-expanderHeader {
+        color: #ffffff !important;
+    }
+
+    /* Text input and text area labels */
+    .stTextInput label, .stTextArea label {
+        color: #ffffff !important;
+    }
+
+    /* Subtitle styling */
+    p {
+        color: #ffffff !important;
     }
     </style>
 """, unsafe_allow_html=True)
