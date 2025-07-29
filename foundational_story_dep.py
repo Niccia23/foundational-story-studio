@@ -19,7 +19,7 @@ def get_base64(file_path):
     return base64.b64encode(data).decode()
 
 # Encode your background image
-encoded_bg = get_base64("iceberg.png")
+encoded_bg = get_base64("iceberg2.jpg")
 
 # Insert background CSS
 st.markdown(
