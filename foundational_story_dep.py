@@ -4,6 +4,7 @@ import io
 import pdfplumber
 import base64
 from PIL import Image
+import time
 
 # Page config
 st.set_page_config(
@@ -293,7 +294,7 @@ if uploaded_file is not None:
 
         if literary_text:
             st.markdown("#### 📘 Uploaded Text Preview")
-            st.text_area("", value=literary_text, height=300)
+            st.text_area("Uploaded text content", value=literary_text, height=300, label_visibility="collapsed")
 
             approx_token_count = len(literary_text) // 4
             estimated_cost = (approx_token_count / 1000) * 0.000125
@@ -320,38 +321,44 @@ if st.button("📝 Run Evaluation") and literary_text:
         # Generate story elements analysis
         try:
             response = model.generate_content(prompt_to_use_story)
+            st.session_state.story_result = response.text.strip()
             st.success("✅ Story elements analysis complete!")
-            st.markdown("### 🎯 Foundational Story Elements Evaluation")
-            with st.expander("Click to view full report", expanded=True):
-                st.markdown(
-                f"<div class='highlight'>{response.text.strip()}</div>",
-                unsafe_allow_html=True
-            )
-            st.download_button(
-            label="📥 Download Evaluation Report",
-            data=response.text.strip(),
-            file_name="story_evaluation.txt",
-            mime="text/plain"
-            )
+            time.sleep(12)
+
+            # st.markdown("### 🎯 Foundational Story Elements Evaluation")
+            # with st.expander("Click to view full report", expanded=True):
+            #     st.markdown(
+            #     f"<div class='highlight'>{response.text.strip()}</div>",
+            #     unsafe_allow_html=True
+            # )
+            # st.download_button(
+            # label="📥 Download Evaluation Report",
+            # data=response.text.strip(),
+            # file_name="story_evaluation.txt",
+            # mime="text/plain"
+            # )
         except Exception as e:
             st.error(f"❌ Error generating story elements analysis: {str(e)}")
 
         # Generate adaptation analysis
         try:
             adaptation_response = model.generate_content(prompt_to_use_adaptation)
+            st.session_state.adaptation_result = adaptation_response.text.strip()
             st.success("✅ Adaptation analysis complete!")
-            st.markdown("### 🎥 Adaptation Suitability Evaluation")
-            with st.expander("Click to view full adaptation report", expanded=True):
-                st.markdown(
-                    f"<div class='highlight'>{adaptation_response.text.strip()}</div>",
-                    unsafe_allow_html=True
-                )
-            st.download_button(
-                label="📥 Download Adaptation Report",
-                data=adaptation_response.text.strip(),
-                file_name="adaptation_evaluation.txt",
-                mime="text/plain"
-            )
+            time.sleep(12)
+
+            # st.markdown("### 🎥 Adaptation Suitability Evaluation")
+            # with st.expander("Click to view full adaptation report", expanded=True):
+            #     st.markdown(
+            #         f"<div class='highlight'>{adaptation_response.text.strip()}</div>",
+            #         unsafe_allow_html=True
+            #     )
+            # st.download_button(
+            #     label="📥 Download Adaptation Report",
+            #     data=adaptation_response.text.strip(),
+            #     file_name="adaptation_evaluation.txt",
+            #     mime="text/plain"
+            # )
         except Exception as e:
             st.error(f"❌ Error generating adaptation analysis: {str(e)}")
 
@@ -359,22 +366,67 @@ if st.button("📝 Run Evaluation") and literary_text:
         st.info("🔄 Generating thematic core analysis...")
         try:
             thematic_core_response = model.generate_content(prompt_to_use_thematic)
+
+            st.session_state.thematic_core_result = thematic_core_response.text.strip()
             st.success("✅ Thematic core analysis complete!")
-            st.markdown("### 🌟 Thematic Core Evaluation")
-            with st.expander("Click to view full thematic core report", expanded=True):
-                st.markdown(
-                    f"<div class='highlight'>{thematic_core_response.text.strip()}</div>",
-                    unsafe_allow_html=True
-                )
-            st.download_button(
-                label="📥 Download Thematic Core Report",
-                data=thematic_core_response.text.strip(),
-                file_name="thematic_core_evaluation.txt",
-                mime="text/plain"
-            )
+            time.sleep(12)
+
+            # st.markdown("### 🌟 Thematic Core Evaluation")
+            # with st.expander("Click to view full thematic core report", expanded=True):
+            #     st.markdown(
+            #         f"<div class='highlight'>{thematic_core_response.text.strip()}</div>",
+            #         unsafe_allow_html=True
+            #     )
+            # st.download_button(
+            #     label="📥 Download Thematic Core Report",
+            #     data=thematic_core_response.text.strip(),
+            #     file_name="thematic_core_evaluation.txt",
+            #     mime="text/plain"
+            # )
         except Exception as thematic_error:
             st.error(f"❌ Error generating thematic core analysis: {str(thematic_error)}")
 
+if 'story_result' in st.session_state:
+    st.markdown("### 🎯 Foundational Story Elements Evaluation")
+    with st.expander("Click to view full report", expanded=True):
+        st.markdown(
+        f"<div class='highlight'>{st.session_state.story_result}</div>",
+        unsafe_allow_html=True
+    )
+    st.download_button(
+    label="📥 Download Evaluation Report",
+    data=st.session_state.story_result,
+    file_name="story_evaluation.txt",
+    mime="text/plain"
+    )
+
+if 'adaptation_result' in st.session_state:
+    st.markdown("### 🎥 Adaptation Suitability Evaluation")
+    with st.expander("Click to view full adaptation report", expanded=True):
+        st.markdown(
+            f"<div class='highlight'>{st.session_state.adaptation_result}</div>",
+            unsafe_allow_html=True
+        )
+    st.download_button(
+        label="📥 Download Adaptation Report",
+        data=st.session_state.adaptation_result,
+        file_name="adaptation_evaluation.txt",
+        mime="text/plain"
+    )
+
+if 'thematic_core_result' in st.session_state:
+    st.markdown("### 🌟 Thematic Core Evaluation")
+    with st.expander("Click to view full thematic core report", expanded=True):
+        st.markdown(
+            f"<div class='highlight'>{st.session_state.thematic_core_result}</div>",
+            unsafe_allow_html=True
+        )
+    st.download_button(
+        label="📥 Download Thematic Core Report",
+        data=st.session_state.thematic_core_result,
+        file_name="thematic_core_evaluation.txt",
+        mime="text/plain"
+    )
 
 # 🔹 Footer
 st.markdown(
